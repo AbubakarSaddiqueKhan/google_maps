@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -82,6 +83,19 @@ class _MyHomePageState extends State<MyHomePage> {
         zoom: 19.151926040649414);
     latLng = LatLng(position.latitude, position.longitude);
     setState(() {});
+    GeoCode geoCode = GeoCode();
+
+    try {
+      Address address = await geoCode.reverseGeocoding(
+          latitude: position.latitude, longitude: position.longitude);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(address.streetAddress.toString() +
+              address.city.toString() +
+              "steet number ${address.streetNumber}")));
+    } catch (e) {
+      print(e);
+    }
     await controller
         .animateCamera(CameraUpdate.newCameraPosition(currentLocation));
   }
